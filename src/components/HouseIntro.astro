@@ -1,91 +1,2296 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 import { site } from '../config/site';
+
+
+/* =========================================================
+   HOUSE PHOTOS
+
+   Change ONLY these filenames so they match the exact
+   photos inside:
+
+   src/assets/photos/
+   ========================================================= */
+
+const HOUSE_PHOTOS = {
+  entrance: 'DSC09314.jpg',
+
+  pool: 'DSC09260.jpg',
+
+  entertainment:
+    'DSC09239.jpg',
+
+  gym: 'DSC09302.jpg',
+
+  sunset:
+    'DSC09236.jpg',
+};
+
+
+/* =========================================================
+   FIND PHOTOS FROM ASSETS
+   ========================================================= */
+
+const photoModules = import.meta.glob(
+  '../assets/photos/*.{jpg,jpeg,png,webp,avif}',
+  {
+    eager: true,
+  }
+);
+
+
+function getPhoto(
+  fileName: string
+): ImageMetadata | null {
+
+  const foundPhoto =
+    Object.entries(
+      photoModules
+    ).find(
+      ([path]) =>
+        path.endsWith(
+          `/${fileName}`
+        )
+    );
+
+
+  if (!foundPhoto) {
+    return null;
+  }
+
+
+  const photoModule =
+    foundPhoto[1] as {
+      default:
+        ImageMetadata;
+    };
+
+
+  return photoModule.default;
+}
+
+
+const entrancePhoto =
+  getPhoto(
+    HOUSE_PHOTOS.entrance
+  );
+
+
+const poolPhoto =
+  getPhoto(
+    HOUSE_PHOTOS.pool
+  );
+
+
+const entertainmentPhoto =
+  getPhoto(
+    HOUSE_PHOTOS.entertainment
+  );
+
+
+const gymPhoto =
+  getPhoto(
+    HOUSE_PHOTOS.gym
+  );
+
+
+const sunsetPhoto =
+  getPhoto(
+    HOUSE_PHOTOS.sunset
+  );
+
+
+/* =========================================================
+   HOUSE DETAILS
+   ========================================================= */
+
+const address =
+  '18A Dordrecht street, Milnerton';
+
+
+const highlights = [
+  {
+    number: '4',
+    label: 'Bedrooms',
+    detail:
+      '2 queen rooms + 2 single-bed rooms',
+  },
+
+  {
+    number: '4.5',
+    label: 'Bathrooms',
+    detail:
+      'Plenty of space for larger groups',
+  },
+
+  {
+    number: '12',
+    label: 'Guests',
+    detail:
+      'Comfortable group accommodation',
+  },
+
+  {
+    number: '4–5',
+    label: 'Cars',
+    detail:
+      'Garage and secure parking',
+  },
+];
+
+
+const distances = [
+  {
+    place:
+      'Lagoon Beach',
+    time:
+      '5 min',
+  },
+
+  {
+    place:
+      'Blouberg Beach',
+    time:
+      '10 min',
+  },
+
+  {
+    place:
+      'Canal Walk',
+    time:
+      '10 min',
+  },
+
+  {
+    place:
+      'Cape Town CBD',
+    time:
+      '10 min',
+  },
+];
 ---
 
-<section id="house" class="house" aria-labelledby="house-title">
-  <div class="container house-grid">
-    <div class="heading">
-      <p class="eyebrow">The house</p>
-      <h2 id="house-title">
-        Your own space,<br />
-        <em>your own pace.</em>
-      </h2>
+<section
+  id="house"
+  class="house"
+  aria-labelledby="house-title"
+>
+
+  <!-- =====================================================
+       01 — ARRIVAL
+       ===================================================== -->
+
+  {
+    entrancePhoto && (
+      <div class="arrival container">
+
+        <div class="arrival-image">
+
+          <Image
+            src={entrancePhoto}
+            alt="The entrance to Aqua House"
+            widths={[
+              800,
+              1200,
+              1600,
+            ]}
+            sizes="(max-width: 760px) 100vw, 1200px"
+            loading="lazy"
+          />
+
+          <div class="arrival-overlay"></div>
+
+          <div class="arrival-copy">
+
+            <p class="arrival-kicker">
+              Welcome to
+            </p>
+
+            <h2 id="house-title">
+              Aqua House
+            </h2>
+
+            <p>
+              Your Cape Town
+              home away from home.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+    )
+  }
+
+
+  <!-- =====================================================
+       02 — INTRODUCTION
+       ===================================================== -->
+
+  <div class="container intro">
+
+    <div class="intro-heading">
+
+      <p class="eyebrow">
+        The house
+      </p>
+
+      {
+        !entrancePhoto && (
+          <h2 id="house-title">
+            Your own space,
+            <br />
+
+            <em>
+              your own pace.
+            </em>
+          </h2>
+        )
+      }
+
+      {
+        entrancePhoto && (
+          <h3>
+            Your own space,
+            <br />
+
+            <em>
+              your own pace.
+            </em>
+          </h3>
+        )
+      }
+
     </div>
 
-    <div class="details">
-      <p class="booking-note">The entire house is yours for your stay.</p>
-      <p class="description">{site.about}</p>
-      <a href="#contact">Ask about your stay <span aria-hidden="true">↗</span></a>
+
+    <div class="intro-copy">
+
+      <p class="booking-note">
+        The entire house is yours
+        for your stay.
+      </p>
+
+      <p>
+        Aqua House is a spacious
+        modern family home created
+        for guests who want room to
+        relax, spend time together
+        and enjoy Cape Town at their
+        own pace.
+      </p>
+
+      <p>
+        With four bedrooms,
+        four-and-a-half bathrooms
+        and accommodation for up to
+        twelve guests, the house is
+        well suited to families,
+        groups of friends, business
+        travellers and visitors
+        exploring the city.
+      </p>
+
+      <p>
+        Two bedrooms feature queen
+        beds, while the remaining
+        bedrooms offer single beds,
+        giving larger groups
+        flexibility when arranging
+        their stay. Every bedroom is
+        air-conditioned and prepared
+        with hotel-quality linen and
+        towels.
+      </p>
+
     </div>
+
   </div>
+
+
+  <!-- =====================================================
+       03 — HOUSE AT A GLANCE
+       ===================================================== -->
+
+  <div class="container highlights">
+
+    {
+      highlights.map(
+        (item) => (
+          <article class="highlight">
+
+            <strong>
+              {item.number}
+            </strong>
+
+            <span class="highlight-label">
+              {item.label}
+            </span>
+
+            <p>
+              {item.detail}
+            </p>
+
+          </article>
+        )
+      )
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       04 — LIVING + POOL
+       ===================================================== -->
+
+  <div class="container story-block">
+
+    <div class="story-copy">
+
+      <p class="story-number">
+        01
+      </p>
+
+      <p class="eyebrow">
+        Settle in
+      </p>
+
+      <h3>
+        Made for slow mornings
+        and long afternoons.
+      </h3>
+
+      <p>
+        The heart of Aqua House is
+        its relaxed living space,
+        where guests can gather in
+        the lounge around the large
+        TV or prepare meals together
+        in the modern kitchen.
+      </p>
+
+      <p>
+        The kitchen includes a
+        fridge and microwave, while
+        the indoor dining table
+        comfortably seats up to
+        eight guests.
+      </p>
+
+      <p>
+        Step outside and the pace
+        slows down even further.
+        Spend the afternoon around
+        the swimming pool, enjoy the
+        poolside braai area, or
+        simply relax in the Cape
+        Town sunshine.
+      </p>
+
+    </div>
+
+
+        {
+      poolPhoto && (
+        <figure class="story-image">
+          <Image
+            src={poolPhoto}
+            alt="Swimming pool area at Aqua House"
+            widths={[600, 900, 1200]}
+            sizes="(max-width: 760px) 100vw, 50vw"
+            loading="lazy"
+          />
+          <figcaption>Poolside afternoons at Aqua House.</figcaption>
+        </figure>
+      )
+    }
+
+  </div>
+
+  <!-- =====================================================
+       05 — ENTERTAINMENT
+       ===================================================== -->
+
+  <div class="entertainment-section">
+
+    <div class="container entertainment-heading">
+
+      <div>
+
+        <p class="story-number">
+          02
+        </p>
+
+        <p class="eyebrow">
+          Stay entertained
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          There is plenty to do
+          without leaving the house.
+        </h3>
+
+        <p>
+          When you're not exploring
+          Cape Town, Aqua House gives
+          you space to unwind at
+          home. Challenge each other
+          to a game of pool, throw a
+          few darts, or fit in a
+          workout in the private gym.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="container entertainment-gallery">
+
+      {
+        entertainmentPhoto && (
+          <figure class="entertainment-main">
+
+            <Image
+              src={entertainmentPhoto}
+              alt="Entertainment area at Aqua House"
+              widths={[
+                700,
+                1000,
+                1400,
+              ]}
+              sizes="(max-width: 760px) 100vw, 65vw"
+              loading="lazy"
+            />
+
+            <figcaption>
+              Pool table & darts
+            </figcaption>
+
+          </figure>
+        )
+      }
+
+
+      {
+        gymPhoto && (
+          <figure class="entertainment-side">
+
+            <Image
+              src={gymPhoto}
+              alt="Private gym at Aqua House"
+              widths={[
+                500,
+                700,
+                900,
+              ]}
+              sizes="(max-width: 760px) 100vw, 35vw"
+              loading="lazy"
+            />
+
+            <figcaption>
+              Your own gym
+            </figcaption>
+
+          </figure>
+        )
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       06 — TABLE MOUNTAIN MOMENT
+       ===================================================== -->
+
+  {
+    sunsetPhoto && (
+      <div class="container view-story">
+
+        <div class="view-image">
+
+          <Image
+            src={sunsetPhoto}
+            alt="Sunset and Table Mountain view from the upstairs balcony at Aqua House"
+            widths={[
+              800,
+              1200,
+              1600,
+            ]}
+            sizes="(max-width: 760px) 100vw, 1200px"
+            loading="lazy"
+          />
+
+          <div class="view-overlay"></div>
+
+
+          <div class="view-copy">
+
+            <p class="story-number">
+              03
+            </p>
+
+            <p class="view-kicker">
+              Upstairs
+            </p>
+
+            <h3>
+              End the day
+              <br />
+
+              <em>
+                with Table Mountain.
+              </em>
+            </h3>
+
+            <p>
+              Head upstairs to the
+              balcony as the light
+              begins to change and
+              take in the view across
+              to Table Mountain.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+    )
+  }
+
+
+  <!-- =====================================================
+       07 — COMFORT
+       ===================================================== -->
+
+  <div class="container comfort">
+
+    <div class="comfort-heading">
+
+      <p class="eyebrow">
+        Everything you need
+      </p>
+
+      <h3>
+        Comfort comes
+        as standard.
+      </h3>
+
+    </div>
+
+
+    <div class="comfort-list">
+
+      <div class="comfort-item">
+        <span>01</span>
+
+        <div>
+          <strong>
+            Air-conditioned rooms
+          </strong>
+
+          <p>
+            Every bedroom has
+            air-conditioning for
+            year-round comfort.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="comfort-item">
+        <span>02</span>
+
+        <div>
+          <strong>
+            Fast Wi-Fi
+          </strong>
+
+          <p>
+            Stay connected,
+            stream comfortably or
+            work remotely.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="comfort-item">
+        <span>03</span>
+
+        <div>
+          <strong>
+            Hotel-quality linen
+          </strong>
+
+          <p>
+            Fresh linen and towels
+            are provided for your
+            stay.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="comfort-item">
+        <span>04</span>
+
+        <div>
+          <strong>
+            Laundry facilities
+          </strong>
+
+          <p>
+            Laundry facilities are
+            available for longer
+            and more comfortable
+            stays.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="comfort-item">
+        <span>05</span>
+
+        <div>
+          <strong>
+            Secure parking
+          </strong>
+
+          <p>
+            Garage parking and room
+            for approximately four
+            to five vehicles.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="comfort-item">
+        <span>06</span>
+
+        <div>
+          <strong>
+            Electric fencing
+          </strong>
+
+          <p>
+            The property is fitted
+            with electric fencing
+            for additional security.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       08 — LOCATION
+       ===================================================== -->
+
+  <div class="location-section">
+
+    <div class="container location-grid">
+
+      <div class="location-intro">
+
+        <p class="eyebrow">
+          Where you'll stay
+        </p>
+
+        <h3>
+          Close to the city.
+          <br />
+
+          <em>
+            Close to the coast.
+          </em>
+        </h3>
+
+        <p class="address">
+          <span aria-hidden="true">
+            ↗
+          </span>
+
+          {address}
+        </p>
+
+        <p class="location-description">
+          Aqua House puts you within
+          easy reach of Cape Town's
+          beaches, shopping and city
+          centre while giving you a
+          spacious home to return to
+          at the end of the day.
+        </p>
+
+      </div>
+
+
+      <div class="distance-list">
+
+        {
+          distances.map(
+            (item) => (
+              <div class="distance">
+
+                <span>
+                  {item.place}
+                </span>
+
+                <div
+                  class="distance-line"
+                  aria-hidden="true"
+                ></div>
+
+                <strong>
+                  {item.time}
+                </strong>
+
+              </div>
+            )
+          )
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       09 — HOUSE NOTE + CTA
+       ===================================================== -->
+
+  <div class="container closing">
+
+    <div class="closing-note">
+
+      <p class="eyebrow">
+        Good to know
+      </p>
+
+      <p>
+        Aqua House maintains a
+        relaxed, family-friendly
+        environment. Alcohol and
+        illegal drugs are not
+        permitted on the premises.
+      </p>
+
+    </div>
+
+
+    <div class="closing-cta">
+
+      <p>
+        Think Aqua House could be
+        right for your stay?
+      </p>
+
+      <a href="#contact">
+        Ask about your stay
+
+        <span aria-hidden="true">
+          ↗
+        </span>
+      </a>
+
+    </div>
+
+  </div>
+
 </section>
 
+
 <style>
+
+  /* =======================================================
+     HOUSE
+     ======================================================= */
+
   .house {
-    padding: clamp(5rem, 9vw, 9rem) 0;
-    background: #fffdf8;
+    padding:
+      clamp(
+        4rem,
+        7vw,
+        7rem
+      )
+      0
+      clamp(
+        5rem,
+        9vw,
+        9rem
+      );
+
+    overflow:
+      hidden;
+
+    background:
+      #fffdf8;
   }
 
-  .house-grid {
-    display: grid;
-    grid-template-columns: 1fr 0.85fr;
-    gap: clamp(3rem, 8vw, 9rem);
-    align-items: start;
+
+  .eyebrow {
+    margin:
+      0 0 1rem;
+
+    color:
+      #668e7b;
+
+    font-size:
+      0.75rem;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      0.16em;
+
+    text-transform:
+      uppercase;
   }
 
-  h2 {
-    margin: 1.25rem 0 0;
-    color: #183e3b;
-    font-size: clamp(2.8rem, 5vw, 5rem);
-    font-weight: 500;
-    line-height: 1.08;
-    letter-spacing: -0.045em;
+
+  /* =======================================================
+     ARRIVAL
+     ======================================================= */
+
+  .arrival {
+    margin-bottom:
+      clamp(
+        5rem,
+        9vw,
+        9rem
+      );
   }
 
-  h2 em {
-    color: #668e7b;
-    font-family: Georgia, serif;
-    font-weight: 400;
+
+  .arrival-image {
+    position:
+      relative;
+
+    min-height:
+      clamp(
+        500px,
+        70vh,
+        760px
+      );
+
+    overflow:
+      hidden;
+
+    border-radius:
+      2px;
+
+    background:
+      #183e3b;
   }
 
-  .details {
-    padding-top: 2.5rem;
+
+  .arrival-image :global(img) {
+    position:
+      absolute;
+
+    inset:
+      0;
+
+    width:
+      100%;
+
+    height:
+      100%;
+
+    object-fit:
+      cover;
   }
+
+
+  .arrival-overlay {
+    position:
+      absolute;
+
+    inset:
+      0;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(
+          11,
+          34,
+          32,
+          0.04
+        )
+        30%,
+        rgba(
+          11,
+          34,
+          32,
+          0.72
+        )
+        100%
+      );
+  }
+
+
+  .arrival-copy {
+    position:
+      absolute;
+
+    z-index:
+      2;
+
+    left:
+      clamp(
+        1.5rem,
+        5vw,
+        5rem
+      );
+
+    bottom:
+      clamp(
+        2rem,
+        5vw,
+        5rem
+      );
+
+    color:
+      white;
+  }
+
+
+  .arrival-kicker {
+    margin:
+      0 0 0.75rem;
+
+    font-size:
+      0.8rem;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      0.15em;
+
+    text-transform:
+      uppercase;
+
+    opacity:
+      0.8;
+  }
+
+
+  .arrival-copy h2 {
+    margin:
+      0;
+
+    color:
+      white;
+
+    font-size:
+      clamp(
+        3.5rem,
+        8vw,
+        7.5rem
+      );
+
+    font-weight:
+      500;
+
+    line-height:
+      0.92;
+
+    letter-spacing:
+      -0.06em;
+  }
+
+
+  .arrival-copy > p:last-child {
+    margin:
+      1.25rem 0 0;
+
+    max-width:
+      420px;
+
+    font-size:
+      clamp(
+        1.05rem,
+        2vw,
+        1.35rem
+      );
+
+    line-height:
+      1.5;
+
+    opacity:
+      0.9;
+  }
+
+
+  /* =======================================================
+     INTRO
+     ======================================================= */
+
+  .intro {
+    display:
+      grid;
+
+    grid-template-columns:
+      0.9fr
+      1.1fr;
+
+    gap:
+      clamp(
+        3rem,
+        8vw,
+        9rem
+      );
+
+    align-items:
+      start;
+  }
+
+
+  .intro h2,
+  .intro h3,
+  .story-copy h3,
+  .entertainment-heading h3,
+  .comfort-heading h3,
+  .location-intro h3 {
+    margin:
+      0;
+
+    color:
+      #183e3b;
+
+    font-size:
+      clamp(
+        2.6rem,
+        5vw,
+        5rem
+      );
+
+    font-weight:
+      500;
+
+    line-height:
+      1.06;
+
+    letter-spacing:
+      -0.045em;
+  }
+
+
+  .intro em,
+  .view-copy em,
+  .location-intro em {
+    color:
+      #668e7b;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-weight:
+      400;
+  }
+
+
+  .intro-copy {
+    padding-top:
+      2.1rem;
+  }
+
 
   .booking-note {
-    margin: 0 0 1.5rem;
-    color: #245f58;
-    font-size: 1.15rem;
-    font-weight: 600;
+    margin:
+      0 0 1.75rem;
+
+    color:
+      #245f58;
+
+    font-size:
+      1.15rem;
+
+    font-weight:
+      700;
   }
 
-  .description {
-    margin: 0;
-    color: #536763;
-    font-size: 1.05rem;
-    line-height: 1.85;
+
+  .intro-copy > p:not(
+    .booking-note
+  ) {
+    margin:
+      0 0 1.15rem;
+
+    color:
+      #536763;
+
+    font-size:
+      1.05rem;
+
+    line-height:
+      1.85;
   }
 
-  a {
-    display: inline-block;
-    margin-top: 2rem;
-    color: #245f58;
-    font-weight: 600;
-    text-underline-offset: 0.35em;
+
+  /* =======================================================
+     HIGHLIGHTS
+     ======================================================= */
+
+  .highlights {
+    margin-top:
+      clamp(
+        4rem,
+        7vw,
+        7rem
+      );
+
+    display:
+      grid;
+
+    grid-template-columns:
+      repeat(
+        4,
+        1fr
+      );
+
+    border-top:
+      1px solid #dce4df;
+
+    border-bottom:
+      1px solid #dce4df;
   }
 
-  a span {
-    margin-left: 0.3rem;
+
+  .highlight {
+    padding:
+      2.5rem
+      2rem;
+
+    border-right:
+      1px solid #dce4df;
   }
 
-  @media (max-width: 760px) {
-    .house-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
+
+  .highlight:first-child {
+    padding-left:
+      0;
+  }
+
+
+  .highlight:last-child {
+    border-right:
+      none;
+  }
+
+
+  .highlight strong {
+    display:
+      block;
+
+    color:
+      #183e3b;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      clamp(
+        2.5rem,
+        4vw,
+        4rem
+      );
+
+    font-weight:
+      400;
+
+    line-height:
+      1;
+  }
+
+
+  .highlight-label {
+    display:
+      block;
+
+    margin-top:
+      0.75rem;
+
+    color:
+      #245f58;
+
+    font-weight:
+      800;
+  }
+
+
+  .highlight p {
+    margin:
+      0.5rem 0 0;
+
+    color:
+      #71817d;
+
+    font-size:
+      0.88rem;
+
+    line-height:
+      1.6;
+  }
+
+
+  /* =======================================================
+     STORY BLOCK
+     ======================================================= */
+
+  .story-block {
+    margin-top:
+      clamp(
+        6rem,
+        11vw,
+        11rem
+      );
+
+    display:
+      grid;
+
+    grid-template-columns:
+      0.85fr
+      1.15fr;
+
+    gap:
+      clamp(
+        3rem,
+        7vw,
+        7rem
+      );
+
+    align-items:
+      center;
+  }
+
+
+  .story-number {
+    margin:
+      0 0 1.5rem;
+
+    color:
+      #a2b5ae;
+
+    font-size:
+      0.75rem;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      0.14em;
+  }
+
+
+  .story-copy h3 {
+    margin-bottom:
+      2rem;
+
+    font-size:
+      clamp(
+        2.25rem,
+        4vw,
+        4rem
+      );
+  }
+
+.story-image {
+  margin: 0;
+  min-width: 0;
+}
+
+.story-photo-frame,
+.entertainment-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #e9efeb;
+}
+
+.story-photo-frame :global(img),
+.entertainment-photo-frame :global(img) {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story-photo-frame :global(img) {
+  object-position: center 60%;
+}
+
+.entertainment-gallery {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.entertainment-gallery figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.entertainment-photo-frame {
+  background: #284f4a;
+}
+
+.entertainment-main .entertainment-photo-frame :global(img) {
+  object-position: center 65%;
+}
+
+.entertainment-side .entertainment-photo-frame :global(img) {
+  object-position: center;
+}
+
+.entertainment-gallery figcaption {
+  color: #d7e5df;
+}
+
+
+  .story-copy > p:not(
+    .story-number,
+    .eyebrow
+  ) {
+    margin:
+      0 0 1rem;
+
+    color:
+      #536763;
+
+    font-size:
+      1rem;
+
+    line-height:
+      1.8;
+  }
+
+
+
+
+/* Pool table / entertainment photo */
+.entertainment-main :global(img) {
+  object-position: center 65%;
+}
+
+
+/* Gym photo */
+.entertainment-side :global(img) {
+  object-position: center;
+}
+
+  .story-image :global(img),
+  .entertainment-gallery :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .story-image :global(img) {
+    object-position: center 60%;
+  }
+
+  figcaption {
+    display: block;
+    margin-top: 0.85rem;
+    color: #71817d;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .entertainment-section {
+    margin-top: clamp(6rem, 11vw, 11rem);
+    padding: clamp(5rem, 8vw, 8rem) 0;
+    background: var(--color-ink);
+  }
+
+  .entertainment-heading {
+    display: grid;
+    grid-template-columns: 0.7fr 1.3fr;
+    gap: clamp(2rem, 7vw, 8rem);
+  }
+
+  .entertainment-heading h3 {
+    max-width: 760px;
+    color: #fffdf8;
+    font-size: clamp(2.4rem, 4.5vw, 4.5rem);
+  }
+
+  .entertainment-heading > div:last-child > p {
+    max-width: 650px;
+    margin: 1.5rem 0 0;
+    color: rgb(255 255 255 / 75%);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .entertainment-section .eyebrow {
+    color: #a9c8bb;
+  }
+
+  .entertainment-section .story-number {
+    color: rgb(255 255 255 / 55%);
+  }
+
+
+  /* =======================================================
+     VIEW / SUNSET
+     ======================================================= */
+
+  .view-story {
+    margin-top:
+      clamp(
+        6rem,
+        11vw,
+        11rem
+      );
+  }
+
+
+  .view-image {
+    position:
+      relative;
+
+    min-height:
+      clamp(
+        520px,
+        72vh,
+        780px
+      );
+
+    overflow:
+      hidden;
+  }
+
+
+  .view-image :global(img) {
+    position:
+      absolute;
+
+    inset:
+      0;
+
+    width:
+      100%;
+
+    height:
+      100%;
+
+    object-fit:
+      cover;
+  }
+
+
+  .view-overlay {
+    position:
+      absolute;
+
+    inset:
+      0;
+
+    background:
+      linear-gradient(
+        90deg,
+        rgba(
+          8,
+          28,
+          26,
+          0.72
+        )
+        0%,
+        rgba(
+          8,
+          28,
+          26,
+          0.32
+        )
+        48%,
+        rgba(
+          8,
+          28,
+          26,
+          0
+        )
+        76%
+      );
+  }
+
+
+  .view-copy {
+    position:
+      absolute;
+
+    z-index:
+      2;
+
+    left:
+      clamp(
+        1.5rem,
+        5vw,
+        5rem
+      );
+
+    top:
+      50%;
+
+    width:
+      min(
+        550px,
+        calc(
+          100% - 3rem
+        )
+      );
+
+    transform:
+      translateY(
+        -50%
+      );
+
+    color:
+      white;
+  }
+
+
+  .view-copy
+  .story-number {
+    color:
+      rgba(
+        255,
+        255,
+        255,
+        0.55
+      );
+  }
+
+
+  .view-kicker {
+    margin:
+      0 0 1rem;
+
+    font-size:
+      0.8rem;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      0.15em;
+
+    text-transform:
+      uppercase;
+  }
+
+
+  .view-copy h3 {
+    margin:
+      0;
+
+    color:
+      white;
+
+    font-size:
+      clamp(
+        2.7rem,
+        5vw,
+        5rem
+      );
+
+    font-weight:
+      500;
+
+    line-height:
+      1.05;
+
+    letter-spacing:
+      -0.05em;
+  }
+
+
+  .view-copy em {
+    color:
+      #d7e5df;
+  }
+
+
+  .view-copy > p:last-child {
+    max-width:
+      470px;
+
+    margin:
+      1.5rem 0 0;
+
+    color:
+      rgba(
+        255,
+        255,
+        255,
+        0.82
+      );
+
+    line-height:
+      1.75;
+  }
+
+
+  /* =======================================================
+     COMFORT
+     ======================================================= */
+
+  .comfort {
+    margin-top:
+      clamp(
+        6rem,
+        11vw,
+        11rem
+      );
+
+    display:
+      grid;
+
+    grid-template-columns:
+      0.85fr
+      1.15fr;
+
+    gap:
+      clamp(
+        3rem,
+        8vw,
+        9rem
+      );
+  }
+
+
+  .comfort-heading h3 {
+    font-size:
+      clamp(
+        2.4rem,
+        4vw,
+        4.2rem
+      );
+  }
+
+
+  .comfort-list {
+    border-top:
+      1px solid #dce4df;
+  }
+
+
+  .comfort-item {
+    display:
+      grid;
+
+    grid-template-columns:
+      42px
+      1fr;
+
+    gap:
+      1rem;
+
+    padding:
+      1.6rem 0;
+
+    border-bottom:
+      1px solid #dce4df;
+  }
+
+
+  .comfort-item > span {
+    color:
+      #a2b5ae;
+
+    font-size:
+      0.72rem;
+
+    font-weight:
+      800;
+  }
+
+
+  .comfort-item strong {
+    color:
+      #245f58;
+
+    font-size:
+      1rem;
+  }
+
+
+  .comfort-item p {
+    margin:
+      0.45rem 0 0;
+
+    color:
+      #71817d;
+
+    font-size:
+      0.92rem;
+
+    line-height:
+      1.6;
+  }
+
+
+  /* =======================================================
+     LOCATION
+     ======================================================= */
+
+  .location-section {
+    margin-top:
+      clamp(
+        6rem,
+        11vw,
+        11rem
+      );
+
+    padding:
+      clamp(
+        5rem,
+        8vw,
+        8rem
+      )
+      0;
+
+    background:
+      #edf3ee;
+  }
+
+
+  .location-grid {
+    display:
+      grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+
+    gap:
+      clamp(
+        3rem,
+        8vw,
+        9rem
+      );
+
+    align-items:
+      end;
+  }
+
+
+  .location-intro h3 {
+    font-size:
+      clamp(
+        2.6rem,
+        4.5vw,
+        4.6rem
+      );
+  }
+
+
+  .address {
+    margin:
+      2rem 0 0;
+
+    color:
+      #245f58;
+
+    font-size:
+      1.1rem;
+
+    font-weight:
+      800;
+  }
+
+
+  .address span {
+    margin-right:
+      0.5rem;
+  }
+
+
+  .location-description {
+    max-width:
+      550px;
+
+    margin:
+      1.25rem 0 0;
+
+    color:
+      #536763;
+
+    line-height:
+      1.75;
+  }
+
+
+  .distance-list {
+    border-top:
+      1px solid #c7d5cf;
+  }
+
+
+  .distance {
+    min-height:
+      70px;
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    gap:
+      1rem;
+
+    border-bottom:
+      1px solid #c7d5cf;
+  }
+
+
+  .distance span {
+    color:
+      #405b56;
+  }
+
+
+  .distance-line {
+    flex:
+      1;
+
+    height:
+      1px;
+
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 5px,
+        #b6c7c0 5px,
+        #b6c7c0 8px
+      );
+  }
+
+
+  .distance strong {
+    color:
+      #183e3b;
+  }
+
+
+  /* =======================================================
+     CLOSING
+     ======================================================= */
+
+  .closing {
+    padding-top:
+      clamp(
+        5rem,
+        8vw,
+        8rem
+      );
+
+    display:
+      grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+
+    gap:
+      clamp(
+        3rem,
+        8vw,
+        8rem
+      );
+  }
+
+
+  .closing-note {
+    max-width:
+      550px;
+  }
+
+
+  .closing-note > p:last-child {
+    margin:
+      0;
+
+    color:
+      #71817d;
+
+    line-height:
+      1.75;
+  }
+
+
+  .closing-cta {
+    align-self:
+      end;
+
+    text-align:
+      right;
+  }
+
+
+  .closing-cta p {
+    margin:
+      0 0 1.25rem;
+
+    color:
+      #536763;
+  }
+
+
+  .closing-cta a {
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    gap:
+      0.75rem;
+
+    padding:
+      0.95rem
+      1.25rem;
+
+    border:
+      1px solid #245f58;
+
+    color:
+      #245f58;
+
+    font-weight:
+      800;
+
+    text-decoration:
+      none;
+
+    transition:
+      background 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+
+  .closing-cta a:hover {
+    background:
+      #245f58;
+
+    color:
+      white;
+
+    transform:
+      translateY(
+        -2px
+      );
+  }
+
+
+  /* =======================================================
+     TABLET
+     ======================================================= */
+
+  @media (
+    max-width:
+      900px
+  ) {
+
+    .highlights {
+      grid-template-columns:
+        repeat(
+          2,
+          1fr
+        );
     }
 
-    .details {
-      padding-top: 0;
+
+    .highlight:nth-child(
+      2
+    ) {
+      border-right:
+        none;
     }
+
+
+    .highlight:nth-child(
+      -n + 2
+    ) {
+      border-bottom:
+        1px solid #dce4df;
+    }
+
+
+    .highlight:nth-child(
+      3
+    ) {
+      padding-left:
+        0;
+    }
+
   }
+
+
+  /* =======================================================
+     MOBILE
+     ======================================================= */
+
+  @media (
+    max-width:
+      760px
+  ) {
+
+    .house {
+      padding-top:
+        2rem;
+    }
+
+
+    .arrival {
+      margin-bottom:
+        4.5rem;
+    }
+
+
+    .arrival-image {
+      min-height:
+        520px;
+
+      margin-inline:
+        -1rem;
+    }
+
+
+    .arrival-copy {
+      left:
+        1.5rem;
+
+      bottom:
+        2rem;
+    }
+
+
+    .intro,
+    .story-block,
+    .entertainment-heading,
+    .comfort,
+    .location-grid,
+    .closing {
+      grid-template-columns:
+        1fr;
+    }
+
+
+    .intro,
+    .story-block,
+    .comfort,
+    .location-grid {
+      gap:
+        2.5rem;
+    }
+
+
+    .intro-copy {
+      padding-top:
+        0;
+    }
+
+
+    .highlights {
+      margin-top:
+        3rem;
+    }
+
+
+    .highlight {
+      padding:
+        1.75rem
+        1.25rem;
+    }
+
+
+    .story-block {
+      margin-top:
+        5.5rem;
+    }
+
+
+    .story-copy {
+      order:
+        1;
+    }
+
+
+    .story-image {
+      order:
+        2;
+    }
+
+
+    .entertainment-section {
+      margin-top:
+        5.5rem;
+
+      padding:
+        4.5rem 0;
+    }
+
+
+    .entertainment-gallery {
+      grid-template-columns:
+        1fr;
+
+      gap:
+        2.5rem;
+    }
+
+
+
+
+    .view-story {
+      margin-top:
+        5.5rem;
+    }
+
+
+    .view-image {
+      min-height:
+        620px;
+
+      margin-inline:
+        -1rem;
+    }
+
+
+    .view-overlay {
+      background:
+        linear-gradient(
+          180deg,
+          rgba(
+            8,
+            28,
+            26,
+            0.08
+          )
+          20%,
+          rgba(
+            8,
+            28,
+            26,
+            0.8
+          )
+          100%
+        );
+    }
+
+
+    .view-copy {
+      top:
+        auto;
+
+      left:
+        1.5rem;
+
+      bottom:
+        2.5rem;
+
+      transform:
+        none;
+    }
+
+
+    .comfort,
+    .location-section,
+    .closing {
+      margin-top:
+        5.5rem;
+    }
+
+
+    .closing-cta {
+      text-align:
+        left;
+    }
+
+  }
+
+
+  @media (
+    max-width:
+      520px
+  ) {
+
+    .highlights {
+      grid-template-columns:
+        1fr;
+    }
+
+
+    .highlight {
+      padding:
+        1.5rem 0;
+
+      border-right:
+        none;
+
+      border-bottom:
+        1px solid #dce4df;
+    }
+
+
+    .highlight:nth-child(
+      -n + 2
+    ) {
+      border-bottom:
+        1px solid #dce4df;
+    }
+
+
+    .highlight:nth-child(
+      3
+    ) {
+      padding-left:
+        0;
+    }
+
+
+    .highlight:last-child {
+      border-bottom:
+        none;
+    }
+
+  }
+
 </style>

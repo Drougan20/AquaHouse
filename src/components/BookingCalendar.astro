@@ -198,10 +198,10 @@
 
 <style>
   .booking {
-    padding: clamp(5rem, 9vw, 8rem) 1.25rem;
-    background: #f3f5ef;
-    color: #193d39;
-  }
+  padding: clamp(5rem, 9vw, 8rem) 1.25rem;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
 
   .booking-layout {
     width: min(100%, 1150px);
@@ -355,7 +355,8 @@
     position: absolute;
     z-index: 20;
     top: calc(100% + 0.75rem);
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: min(720px, calc(100vw - 2rem));
     max-height: min(72vh, 640px);
     overflow-y: auto;
@@ -505,7 +506,7 @@
   }
 
   .booking-days :global(.booking-day.is-selected) {
-    background: #20564d;
+    background: var(--color-sea);
     color: #fff;
     opacity: 1;
     text-decoration: none;
@@ -576,9 +577,9 @@
 
   .booking-actions :global(button),
   .inquiry-form button {
-    min-height: 2.9rem;
-    padding: 0.7rem 1rem;
-    border-radius: 0.65rem;
+    min-height: 3.35rem;
+    padding: 0.8rem 1.3rem;
+    border-radius: 999px;
     font: inherit;
     font-weight: 700;
     cursor: pointer;
@@ -613,10 +614,16 @@
     color: #fff;
   }
 
-  .inquire-button:disabled {
-    opacity: 0.45;
-    cursor: default;
-  }
+  .inquire-button {
+  border: 1px solid var(--color-sea);
+  background: var(--color-sea);
+  color: #fff;
+}
+
+.inquire-button:hover:not(:disabled) {
+  border-color: var(--color-sea-dark);
+  background: var(--color-sea-dark);
+}
 
   .inquiry-form {
     position: relative;

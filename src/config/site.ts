@@ -22,27 +22,22 @@ export const site = {
   area: 'Milnerton',
 
   intro:
-    'A comfortable place to share time together. Explore the house, picture your stay and get in touch about your dates.',
+    'Stay at Aqua House, a private four-bedroom house in Milnerton, Cape Town. Sleeps up to 12 guests, with a pool, entertainment area and gym.',
 
   about:
-    'A whole house to enjoy at your own pace. Add a short description here about what makes your property special.',
+    'A spacious whole-house stay for family and friends, with room to relax by the pool, share a meal and enjoy Cape Town at your own pace.',
 
-  
   whatsappNumber: '27799149415',
   callNumber: '0799149415',
   contactEmail: 'aquahouse97@gmail.com',
 
   photos: {
     hero: {
-      src: '',
-      alt: '',
+      src: 'DSC09176.jpg',
+      alt: 'Aqua House in Milnerton, Cape Town',
     },
 
-    gallery: [
-      { src: '', alt: '' },
-      { src: '', alt: '' },
-      { src: '', alt: '' },
-      { src: '', alt: '' },
-    ],
+    // An empty list uses the photos already in src/assets/photos/.
+    gallery: [],
   },
 } satisfies SiteContent;

@@ -1,16 +1,17 @@
 :root {
   font-family: Arial, Helvetica, sans-serif;
-  color: #24433e;
-  background: #f7f6ef;
+  color: #173f3b;
+  background: #fffdf8;
 
-  --color-background: #f7f6ef;
+  --color-background: #fffdf8;
   --color-paper: #fffdf8;
-  --color-ink: #24433e;
-  --color-muted: #5c7067;
-  --color-sea: #276b68;
-  --color-sea-dark: #1e5552;
-  --color-sage: #e4ede4;
-  --color-line: #d3dfd5;
+  --color-ink: #173f3b;
+  --color-muted: #536e69;
+  --color-sea: #34766d;
+  --color-sea-dark: #235f57;
+  --color-soft-teal: #e7f2ef;
+  --color-sage: #edf3ee;
+  --color-line: #cbdcd4;
 
   --font-display: Georgia, "Times New Roman", serif;
 }
@@ -85,7 +86,7 @@ img {
 }
 
 section[id] {
-  scroll-margin-top: 80px;
+  scroll-margin-top: 90px;
 }
 
 @media (max-width: 600px) {
