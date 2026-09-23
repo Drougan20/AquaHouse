@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import HouseIntro from '../components/HouseIntro.astro';
+import Gallery from '../components/Gallery.astro';
+import Contact from '../components/Contact.astro';
+import BookingCalendar from '../components/BookingCalendar.astro';
+---
+
+<BaseLayout>
+  <Header />
+
+  <main id="main-content">
+    <Hero />
+    <HouseIntro />
+    <Gallery />
+    <BookingCalendar />
+    <Contact />
+  </main>
+</BaseLayout>

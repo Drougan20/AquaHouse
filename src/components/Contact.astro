@@ -1,0 +1,432 @@
+---
+import { site } from '../config/site';
+
+const phoneLink = site.callNumber.trim()
+  ? `tel:${site.callNumber.replace(/[^\d+]/g, '')}`
+  : undefined;
+---
+
+<section id="contact" class="contact" aria-labelledby="contact-title">
+  <div class="container contact-grid">
+    <div class="contact-copy">
+      <p class="section-label"><span></span> Get in touch</p>
+
+      <h2 id="contact-title">
+        Let's plan<br />
+        <em>your stay.</em>
+      </h2>
+
+      <p class="intro">
+        Have dates in mind? Ask us about availability for the whole house.
+        We'd love to hear from you.
+      </p>
+
+      <a class="call-card" href={phoneLink}>
+        <span class="call-icon" aria-hidden="true">☎</span>
+
+        <span class="call-details">
+          <span>Prefer a conversation?</span>
+          <strong>{site.callNumber}</strong>
+        </span>
+
+        <span class="call-arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+
+    <form
+      id="contact-form"
+      class="contact-form"
+      action="/api/contact"
+      method="post"
+    >
+      <div class="form-heading">
+        <div>
+          <p class="form-kicker">A direct enquiry</p>
+          <h3>Send a message</h3>
+        </div>
+        <span class="form-mark" aria-hidden="true">✳</span>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="contact-name">Your name</label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            placeholder="Your name"
+            maxlength="100"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="contact-email">Email address</label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            maxlength="254"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="contact-message">Your message</label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="5"
+          maxlength="3000"
+          placeholder="Tell us your preferred dates and anything you'd like to know..."
+          required
+        ></textarea>
+      </div>
+
+      <div hidden aria-hidden="true">
+        <label for="contact-website">Website</label>
+        <input
+          id="contact-website"
+          name="website"
+          type="text"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-footer">
+        <button type="submit">
+          Send message <span aria-hidden="true">↗</span>
+        </button>
+        <p class="form-status" data-contact-status role="status"></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+  const status = document.querySelector<HTMLElement>(
+    '[data-contact-status]'
+  );
+  const submitButton = form?.querySelector<HTMLButtonElement>(
+    'button[type="submit"]'
+  );
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (!form.reportValidity() || !status || !submitButton) return;
+
+    submitButton.disabled = true;
+    submitButton.innerHTML = 'Sending...';
+    status.textContent = '';
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      });
+
+      if (!response.ok) throw new Error('Message delivery failed');
+
+      form.reset();
+      status.textContent = 'Message sent. We’ll be in touch soon.';
+    } catch {
+      status.textContent =
+        'Message could not be sent. Please call us instead.';
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML =
+        'Send message <span aria-hidden="true">↗</span>';
+    }
+  });
+</script>
+
+<style>
+  .contact {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(5rem, 9vw, 9rem) 0;
+    background:
+      radial-gradient(
+        circle at 10% 10%,
+        rgb(112 169 143 / 20%),
+        transparent 34%
+      ),
+      #19423d;
+    color: #fff;
+  }
+
+  .contact::after {
+    position: absolute;
+    z-index: -1;
+    right: -14rem;
+    bottom: -25rem;
+    width: 50rem;
+    height: 50rem;
+    border: 1px solid rgb(255 255 255 / 13%);
+    border-radius: 50%;
+    content: '';
+    pointer-events: none;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(3rem, 7vw, 8rem);
+  }
+
+  .contact-copy {
+    max-width: 36rem;
+  }
+
+  .section-label,
+  .form-kicker {
+    margin: 0;
+    color: #dceee1;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-label span {
+    width: 2.5rem;
+    height: 1px;
+    background: #dceee1;
+  }
+
+  h2 {
+    margin: 1.5rem 0;
+    color: #fff;
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.06em;
+  }
+
+  h2 em {
+    color: #e5f0e4;
+    font-family: Georgia, serif;
+    font-weight: 400;
+  }
+
+  .intro {
+    max-width: 31rem;
+    margin: 0;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.8;
+  }
+
+  .call-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 3rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid rgb(255 255 255 / 45%);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 10%);
+    color: #fff;
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .call-card:hover {
+    transform: translateY(-3px);
+    background: rgb(255 255 255 / 17%);
+  }
+
+  .call-icon {
+    display: grid;
+    flex: 0 0 3rem;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #dceee1;
+    color: #19423d;
+    font-size: 1.5rem;
+  }
+
+  .call-details {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .call-details span {
+    color: #e5f0e4;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .call-details strong {
+    overflow-wrap: anywhere;
+    color: #fff;
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    font-weight: 800;
+  }
+
+  .call-arrow {
+    margin-left: 0.6rem;
+    font-size: 1.3rem;
+  }
+
+  .contact-form {
+    padding: clamp(1.5rem, 3vw, 2.7rem);
+    border: 1px solid rgb(255 255 255 / 35%);
+    border-radius: 1.5rem;
+    background: #285a52;
+    box-shadow: 0 28px 65px rgb(8 33 29 / 25%);
+  }
+
+  .form-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 25%);
+  }
+
+  h3 {
+    margin: 0.5rem 0 0;
+    color: #fff;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .form-mark {
+    color: #dceee1;
+    font-size: 2rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.6rem;
+    min-width: 0;
+    margin-bottom: 1.3rem;
+  }
+
+  .field label {
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .field input,
+  .field textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 0.95rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    background: #f9fbf8;
+    color: #19423d;
+    font: inherit;
+    font-weight: 500;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #75877d;
+  }
+
+  .field textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+
+  .field input:focus-visible,
+  .field textarea:focus-visible,
+  .form-footer button:focus-visible,
+  .call-card:focus-visible {
+    outline: 3px solid #dceee1;
+    outline-offset: 3px;
+  }
+
+  .form-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .form-footer button {
+    min-height: 3.4rem;
+    padding: 0.85rem 1.5rem;
+    border: 1px solid #dceee1;
+    border-radius: 999px;
+    background: #dceee1;
+    color: #19423d;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .form-footer button:hover {
+    background: #fff;
+  }
+
+  .form-footer button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .form-footer button span {
+    margin-left: 0.45rem;
+  }
+
+  .form-status {
+    margin: 0;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  @media (max-width: 800px) {
+    .contact-grid,
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-form {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .call-card {
+      transition: none;
+    }
+  }
+</style>

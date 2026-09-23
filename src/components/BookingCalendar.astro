@@ -1,0 +1,720 @@
+<section id="availability" class="booking" aria-labelledby="booking-title">
+  <div class="booking-layout">
+    <div class="booking-intro">
+      <p class="eyebrow">PLAN YOUR STAY</p>
+      <h2 id="booking-title">Find your dates.</h2>
+      <p>
+        Explore availability for the whole house, see your estimated stay
+        total, and send us an enquiry.
+      </p>
+      <p class="booking-note">
+        Dates and prices are confirmed when we reply to your enquiry.
+      </p>
+    </div>
+
+    <div class="booking-card">
+      <p class="eyebrow">YOUR WHOLE-HOUSE STAY</p>
+      <h3 class="card-title">Choose your stay.</h3>
+      <p class="card-intro">
+        Tap a date to open the calendar. Choose check-in first, then check-out.
+      </p>
+
+      <div id="booking-picker" class="booking-picker">
+        <div class="booking-bar">
+          <button
+            id="booking-check-in-button"
+            class="date-control"
+            type="button"
+            aria-controls="booking-calendar-popover"
+            aria-expanded="false"
+          >
+            <span>CHECK-IN</span>
+            <strong id="booking-check-in">Choose date</strong>
+            <svg class="calendar-icon" aria-hidden="true" viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+              <path d="M7 3v4M17 3v4M3 10h18"></path>
+            </svg>
+          </button>
+
+          <button
+            id="booking-check-out-button"
+            class="date-control"
+            type="button"
+            aria-controls="booking-calendar-popover"
+            aria-expanded="false"
+          >
+            <span>CHECK-OUT</span>
+            <strong id="booking-check-out">Choose date</strong>
+            <svg class="calendar-icon" aria-hidden="true" viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+              <path d="M7 3v4M17 3v4M3 10h18"></path>
+            </svg>
+          </button>
+
+          <div class="night-count" aria-live="polite">
+            <span>TOTAL NIGHTS</span>
+            <strong id="booking-nights">Select dates</strong>
+          </div>
+
+          <button
+            id="booking-view-calendar"
+            class="view-calendar"
+            type="button"
+            aria-controls="booking-calendar-popover"
+            aria-expanded="false"
+          >
+            View calendar
+          </button>
+        </div>
+
+        <div
+          id="booking-calendar-popover"
+          class="calendar-popover"
+          role="region"
+          aria-label="Availability calendar"
+          hidden
+        >
+          <div class="calendar-top">
+            <div>
+              <p class="eyebrow">SELECT YOUR DATES</p>
+              <h3 id="booking-month">Calendar</h3>
+            </div>
+
+            <div class="month-buttons">
+              <button
+                id="booking-previous"
+                type="button"
+                aria-label="Previous month"
+              >
+                ←
+              </button>
+              <button
+                id="booking-next"
+                type="button"
+                aria-label="Next month"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <p class="calendar-instruction">
+            Choose check-in, then check-out. Booked dates are unavailable
+            for overnight stays.
+          </p>
+
+          <div
+            id="booking-days"
+            class="booking-days"
+            aria-label="Choose your dates"
+          ></div>
+
+          <div class="calendar-legend">
+            <span><i class="available"></i> Available</span>
+            <span><i class="unavailable"></i> Booked</span>
+            <span><i class="past"></i> Past date</span>
+          </div>
+        </div>
+      </div>
+
+      <p id="booking-status" class="booking-status" role="status">
+        Loading availability…
+      </p>
+
+      <div class="price-summary">
+        <small>ESTIMATED TOTAL</small>
+        <strong id="booking-total">Choose your dates</strong>
+      </div>
+
+      <p id="booking-quote-status" class="booking-status" role="status"></p>
+
+      <div class="booking-actions">
+        <button id="booking-refresh" class="refresh-button" type="button">
+          Refresh availability
+        </button>
+
+        <button
+          id="booking-inquire"
+          class="inquire-button"
+          type="button"
+          disabled
+        >
+          Inquire about these dates
+        </button>
+      </div>
+
+      <form id="booking-form" class="inquiry-form" hidden>
+        <h3>Send an enquiry</h3>
+        <p>Share your plans and how we can reach you.</p>
+
+        <label for="booking-name">Your name</label>
+        <input id="booking-name" name="name" type="text" maxlength="100" />
+
+        <div class="contact-fields">
+          <div>
+            <label for="booking-email">Email address</label>
+            <input id="booking-email" name="email" type="email" />
+          </div>
+
+          <div>
+            <label for="booking-phone">Phone number</label>
+            <input id="booking-phone" name="phone" type="tel" />
+          </div>
+        </div>
+
+        <p class="field-hint">
+          Enter an email address, a phone number, or both.
+        </p>
+
+        <label for="booking-message">Message</label>
+        <textarea
+          id="booking-message"
+          name="message"
+          rows="4"
+          maxlength="3000"
+          required
+          placeholder="Tell us about your stay…"
+        ></textarea>
+
+        <div class="trap" aria-hidden="true">
+          <label for="booking-website">Website</label>
+          <input
+            id="booking-website"
+            name="website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+
+        <button id="booking-send" class="inquire-button" type="submit">
+          Send enquiry
+        </button>
+        <p id="booking-form-status" role="status"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .booking {
+    padding: clamp(5rem, 9vw, 8rem) 1.25rem;
+    background: #f3f5ef;
+    color: #193d39;
+  }
+
+  .booking-layout {
+    width: min(100%, 1150px);
+    margin: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+
+  .booking-intro {
+    padding-top: 2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.19em;
+  }
+
+  .booking-intro h2 {
+    margin: 0 0 1.5rem;
+    font-size: clamp(3.2rem, 6vw, 5.5rem);
+    line-height: 0.97;
+    letter-spacing: -0.055em;
+  }
+
+  .booking-intro > p:not(.eyebrow) {
+    max-width: 30rem;
+    line-height: 1.7;
+  }
+
+  .booking-note {
+    opacity: 0.75;
+  }
+
+  .booking-card {
+    min-width: 0;
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    border: 1px solid #dce5dd;
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 24px 65px rgb(23 63 56 / 8%);
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.1;
+  }
+
+  .card-intro {
+    margin: 0.65rem 0 1.4rem;
+    color: #52716b;
+    line-height: 1.5;
+  }
+
+  .booking-picker {
+    position: relative;
+  }
+
+  .booking-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+
+  .date-control,
+  .night-count,
+  .view-calendar {
+    min-width: 0;
+    min-height: 4.5rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid #d9e6dd;
+    border-radius: 0.7rem;
+    background: #fbfcf9;
+    color: #193d39;
+    font: inherit;
+  }
+
+  .date-control {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-content: center;
+    gap: 0.25rem;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .date-control > span:first-child,
+  .night-count > span {
+    grid-column: 1 / -1;
+    color: #637e73;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+
+  .date-control strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.94rem;
+  }
+
+  .calendar-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: #39725e;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .date-control:hover,
+  .date-control.is-active {
+    border-color: #368c71;
+    background: #eef6f0;
+  }
+
+  .night-count {
+    display: grid;
+    align-content: center;
+    gap: 0.3rem;
+  }
+
+  .night-count strong {
+    font-size: 1rem;
+  }
+
+  .view-calendar {
+    color: #20564d;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .view-calendar:hover {
+    background: #eef6f0;
+  }
+
+  .booking-status {
+    min-height: 1.4rem;
+    margin: 0.8rem 0;
+    color: #52716b;
+    font-size: 0.84rem;
+  }
+
+  .calendar-popover {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    width: min(720px, calc(100vw - 2rem));
+    max-height: min(72vh, 640px);
+    overflow-y: auto;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    border: 1px solid #dce5dd;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 22px 55px rgb(23 63 56 / 18%);
+  }
+
+  .calendar-popover[hidden] {
+    display: none;
+  }
+
+  .calendar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .calendar-top h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .calendar-top .eyebrow {
+    margin-bottom: 0.35rem;
+  }
+
+  .month-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .month-buttons button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid #dce5dd;
+    border-radius: 50%;
+    background: #fff;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .month-buttons button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .calendar-instruction {
+    margin: 0.9rem 0 0;
+    color: #52716b;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .booking :global(.booking-month-pair) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin: 1.1rem 0;
+  }
+
+  .booking :global(.booking-month-pair.has-one-month) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .booking :global(.booking-month-panel) {
+    min-width: 0;
+    padding: 0.6rem;
+    border: 1px solid #e0e9e2;
+    border-radius: 0.75rem;
+    background: #fbfcf9;
+  }
+
+  .booking :global(.booking-month-panel[hidden]) {
+    display: none;
+  }
+
+  .booking :global(.booking-month-title) {
+    margin: 0 0 0.85rem;
+    color: #20564d;
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .booking-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.2rem;
+    width: 100%;
+  }
+
+  .booking-days :global(.booking-weekday) {
+    padding: 0.25rem 0;
+    color: #6b817b;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .booking-days :global(.booking-empty) {
+    aspect-ratio: 1;
+  }
+
+  .booking-days :global(.booking-day) {
+    min-width: 0;
+    padding: 0;
+    aspect-ratio: 1;
+    border: 0;
+    border-radius: 0.6rem;
+    background: transparent;
+    color: #193d39;
+    font: inherit;
+    font-size: 0.86rem;
+    cursor: pointer;
+  }
+
+  .booking-days :global(.booking-day:hover:not(:disabled)) {
+    background: #dcebe3;
+  }
+
+  .booking-days :global(.booking-day.is-between) {
+    background: #e3eee8;
+  }
+
+  .booking-days :global(.booking-day.is-blocked) {
+    background: #f1f0ed;
+    color: #889790;
+    text-decoration: line-through;
+  }
+
+  .booking-days :global(.booking-day.is-checkout-only) {
+    background: #e8f3ec;
+    color: #20564d;
+    text-decoration: none;
+    outline: 2px dashed #74a08c;
+    outline-offset: -3px;
+  }
+
+  .booking-days :global(.booking-day.is-past) {
+    background: #e9eeeb;
+    color: #75857d;
+    opacity: 0.5;
+    text-decoration: line-through;
+  }
+
+  .booking-days :global(.booking-day.is-selected) {
+    background: #20564d;
+    color: #fff;
+    opacity: 1;
+    text-decoration: none;
+    outline: 0;
+  }
+
+  .booking-days :global(.booking-day:disabled) {
+    cursor: default;
+  }
+
+  .calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    color: #627972;
+    font-size: 0.78rem;
+  }
+
+  .calendar-legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .calendar-legend i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+  }
+
+  .available {
+    background: #368c71;
+  }
+
+  .unavailable {
+    background: #b7bfba;
+  }
+
+  .past {
+    background: #e9eeeb;
+    border: 1px solid #aebcb3;
+  }
+
+  .price-summary {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e2eae4;
+  }
+
+  .price-summary small {
+    color: #698078;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+
+  .price-summary strong {
+    font-size: 1.55rem;
+  }
+
+  .booking-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1.1rem;
+  }
+
+  .booking-actions :global(button),
+  .inquiry-form button {
+    min-height: 2.9rem;
+    padding: 0.7rem 1rem;
+    border-radius: 0.65rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .refresh-button {
+    flex: 1 1 9rem;
+    border: 1px solid #cbdcd0;
+    background: #fff;
+    color: #20564d;
+  }
+
+  .booking-actions :global(.booking-reset) {
+    flex: 1 1 8rem;
+    border: 1px solid #8cafa0;
+    background: #edf5ef;
+    color: #20564d;
+  }
+
+  .booking-actions :global(.booking-reset:disabled) {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .booking-actions .inquire-button {
+    flex: 1 1 12rem;
+  }
+
+  .inquire-button {
+    border: 1px solid #20564d;
+    background: #20564d;
+    color: #fff;
+  }
+
+  .inquire-button:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .inquiry-form {
+    position: relative;
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2eae4;
+  }
+
+  .inquiry-form[hidden] {
+    display: none;
+  }
+
+  .inquiry-form h3,
+  .inquiry-form p {
+    margin: 0;
+  }
+
+  .inquiry-form label {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .inquiry-form input,
+  .inquiry-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #cbdcd0;
+    border-radius: 0.6rem;
+    background: #fff;
+    color: #193d39;
+    font: inherit;
+  }
+
+  .contact-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .contact-fields > div {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .field-hint {
+    color: #627972;
+    font-size: 0.82rem;
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .booking-days :global(.booking-day:focus-visible),
+  .booking-actions :global(button:focus-visible),
+  .date-control:focus-visible,
+  .view-calendar:focus-visible,
+  .month-buttons button:focus-visible,
+  .inquiry-form input:focus-visible,
+  .inquiry-form textarea:focus-visible {
+    outline: 3px solid #a7cdb5;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 980px) {
+    .booking-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .booking-intro {
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .booking :global(.booking-month-pair) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .contact-fields {
+      grid-template-columns: 1fr;
+    }
+
+    .booking-actions {
+      flex-direction: column;
+    }
+
+    .booking-actions :global(button) {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/booking-calendar';
+</script>

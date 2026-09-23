@@ -1,0 +1,164 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../config/site';
+import { heroPhoto } from '../lib/photos';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">
+        An entire house to yourself{site.area ? ` · ${site.area}` : ''}
+      </p>
+
+      <h1 id="hero-title">{site.name}</h1>
+      <p class="intro">{site.intro}</p>
+
+      <div class="hero-actions">
+        <a class="primary-link" href="#contact">Enquire about your stay</a>
+        <a class="secondary-link" href="#gallery">Explore the photos <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <div class="photo-arch">
+        {
+          heroPhoto ? (
+            <Image
+              src={heroPhoto.image}
+              alt={heroPhoto.alt}
+              width={960}
+              layout="constrained"
+              format="webp"
+              priority
+            />
+          ) : (
+            <div class="photo-placeholder" aria-hidden="true" />
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    overflow: hidden;
+    background: var(--color-linen, #f6f2e9);
+    padding: clamp(4rem, 8vw, 7rem) 0;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(3rem, 7vw, 8rem);
+  }
+
+  .hero-copy {
+    max-width: 37rem;
+  }
+
+  h1 {
+    margin: 1.1rem 0 1.5rem;
+    color: #183e3b;
+    font-size: clamp(3.5rem, 7vw, 6.5rem);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+
+  .intro {
+    max-width: 31rem;
+    margin: 0;
+    color: #536763;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+    line-height: 1.75;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .primary-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
+    background: #245f58;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 180ms ease;
+  }
+
+  .primary-link:hover {
+    background: #183e3b;
+  }
+
+  .secondary-link {
+    color: #245f58;
+    font-weight: 600;
+    text-underline-offset: 0.3em;
+  }
+
+  .secondary-link span {
+    margin-left: 0.2rem;
+  }
+
+  .hero-art {
+    position: relative;
+    padding: 1.25rem 1.25rem 0 0;
+  }
+
+  .hero-art::before {
+    position: absolute;
+    inset: 3rem 0 1.25rem 3rem;
+    border: 1px solid #8ca99a;
+    border-radius: 48% 48% 1.5rem 1.5rem / 28% 28% 1.5rem 1.5rem;
+    content: '';
+  }
+
+  .photo-arch {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 48% 48% 1.5rem 1.5rem / 28% 28% 1.5rem 1.5rem;
+    background: #d9e4db;
+  }
+
+  .photo-arch :global(img),
+  .photo-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding: 4rem 0;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-art {
+      width: min(100%, 34rem);
+      margin-inline: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .primary-link {
+      transition: none;
+    }
+  }
+</style>

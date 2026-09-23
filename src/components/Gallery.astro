@@ -1,0 +1,517 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { galleryPhotos, heroPhoto } from '../lib/photos';
+
+const visiblePhotos = galleryPhotos.slice(0, 6);
+
+const allPhotos =
+  heroPhoto &&
+  !galleryPhotos.some((photo) => photo.fileName === heroPhoto.fileName)
+    ? [heroPhoto, ...galleryPhotos]
+    : galleryPhotos;
+
+const slides = await Promise.all(
+  allPhotos.map(async (photo) => {
+    const image = await getImage({
+      src: photo.image,
+      width: Math.min(photo.image.width, 1400),
+      format: 'webp',
+      quality: 75,
+    });
+
+    return { src: image.src, alt: photo.alt };
+  })
+);
+
+// Keep photo descriptions safe when placing the data inside a script tag.
+const slideData = JSON.stringify(slides).replace(/</g, '\\u003c');
+---
+
+<section id="gallery" class="gallery" aria-labelledby="gallery-title">
+  <div class="container">
+    <div class="gallery-heading">
+      <div>
+        <p class="eyebrow">A closer look</p>
+        <h2 id="gallery-title">Picture yourself here.</h2>
+      </div>
+      <p>Explore the spaces that make the house yours for the stay.</p>
+    </div>
+
+    {
+      visiblePhotos.length > 0 ? (
+        <div class="gallery-grid">
+          {visiblePhotos.map((photo, index) => (
+            <div class="gallery-photo">
+              <Image
+                src={photo.image}
+                alt={photo.alt}
+                width={960}
+                widths={[320, 640, 960]}
+                sizes={
+                  index < 2
+                    ? '(max-width: 700px) 100vw, 50vw'
+                    : '(max-width: 700px) 50vw, 25vw'
+                }
+                format="webp"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Photos coming soon.</p>
+      )
+    }
+
+    <div class="gallery-actions">
+      <button
+        class="view-all"
+        type="button"
+        data-gallery-open
+        disabled={slides.length === 0}
+      >
+        See all pictures <span aria-hidden="true">↗</span>
+      </button>
+    </div>
+  </div>
+
+  <dialog
+    class="photo-dialog"
+    data-gallery-dialog
+    aria-labelledby="all-photos-title"
+  >
+    <div class="lightbox">
+      <div class="lightbox-header">
+        <div>
+          <p class="eyebrow">The photo gallery</p>
+          <h3 id="all-photos-title">Take a closer look</h3>
+        </div>
+
+        <form method="dialog">
+          <button class="close-button" type="submit" autofocus>
+            Close <span aria-hidden="true">×</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="viewer-stage" data-gallery-stage data-ready="false">
+        <img class="viewer-image" data-gallery-image alt="" />
+      </div>
+
+      <div class="viewer-controls">
+        <button type="button" data-gallery-prev aria-label="Previous photo">
+          <span aria-hidden="true">←</span> Previous
+        </button>
+
+        <span class="photo-count" data-gallery-count aria-live="polite">
+          1 / {slides.length}
+        </span>
+
+        <button type="button" data-gallery-next aria-label="Next photo">
+          Next <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <script
+    id="gallery-photo-data"
+    type="application/json"
+    set:html={slideData}
+  />
+</section>
+
+<script>
+  type Slide = { src: string; alt: string };
+
+  const data = document.querySelector<HTMLScriptElement>(
+    '#gallery-photo-data'
+  );
+  const slides = JSON.parse(data?.textContent || '[]') as Slide[];
+
+  const openButton = document.querySelector<HTMLButtonElement>(
+    '[data-gallery-open]'
+  );
+  const dialog = document.querySelector<HTMLDialogElement>(
+    '[data-gallery-dialog]'
+  );
+  const image = document.querySelector<HTMLImageElement>(
+    '[data-gallery-image]'
+  );
+  const stage = document.querySelector<HTMLElement>(
+    '[data-gallery-stage]'
+  );
+  const counter = document.querySelector<HTMLElement>(
+    '[data-gallery-count]'
+  );
+  const previous = document.querySelector<HTMLButtonElement>(
+    '[data-gallery-prev]'
+  );
+  const next = document.querySelector<HTMLButtonElement>(
+    '[data-gallery-next]'
+  );
+
+  let currentIndex = 0;
+  let requestId = 0;
+
+  // Keep one request per photo, even if the visitor opens the viewer
+  // while background loading is still running.
+  const photoLoads = new Map<number, Promise<void>>();
+
+  function preloadPhoto(index: number): Promise<void> {
+    const existing = photoLoads.get(index);
+    if (existing) return existing;
+
+    const task = new Promise<void>((resolve) => {
+      const photo = new window.Image();
+      photo.onload = () => resolve();
+      photo.onerror = () => resolve();
+      photo.src = slides[index].src;
+    });
+
+    photoLoads.set(index, task);
+    return task;
+  }
+
+  const preloadOrder = [
+    ...new Set([
+      0,
+      1,
+      slides.length - 1,
+      ...slides.map((_, index) => index),
+    ]),
+  ].filter((index) => index >= 0 && index < slides.length);
+
+  let preloadStarted = false;
+  let preloadPosition = 0;
+
+  async function preloadWorker() {
+    while (preloadPosition < preloadOrder.length) {
+      const index = preloadOrder[preloadPosition++];
+      await preloadPhoto(index);
+    }
+  }
+
+  function startPreloading() {
+    if (preloadStarted || slides.length === 0) return;
+    preloadStarted = true;
+
+    // Three photos at a time keeps the page responsive while the
+    // complete slideshow loads in the background.
+    void Promise.all([
+      preloadWorker(),
+      preloadWorker(),
+      preloadWorker(),
+    ]);
+  }
+
+  function showPhoto(index: number) {
+    if (!image || !counter || slides.length === 0) return;
+
+    currentIndex = (index + slides.length) % slides.length;
+    const thisRequest = ++requestId;
+
+    image.classList.remove('is-changing');
+
+    const incoming = new window.Image();
+
+    incoming.onload = () => {
+      if (thisRequest !== requestId || !image || !counter) return;
+
+      image.classList.add('is-changing');
+
+      window.setTimeout(() => {
+        if (thisRequest !== requestId || !image || !counter) return;
+
+        image.src = incoming.src;
+        image.alt = slides[currentIndex].alt;
+        counter.textContent = `${currentIndex + 1} / ${slides.length}`;
+        stage?.setAttribute('data-ready', 'true');
+
+        requestAnimationFrame(() => {
+          image.classList.remove('is-changing');
+        });
+      }, 180);
+    };
+
+    incoming.src = slides[currentIndex].src;
+  }
+
+  // Begin before the visitor reaches the gallery.
+  const gallery = document.getElementById('gallery');
+
+  if (gallery && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          startPreloading();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '900px 0px' }
+    );
+
+    observer.observe(gallery);
+  }
+
+  openButton?.addEventListener('pointerenter', startPreloading, {
+    once: true,
+  });
+  openButton?.addEventListener('focus', startPreloading, {
+    once: true,
+  });
+
+  openButton?.addEventListener('click', () => {
+    startPreloading();
+    dialog?.showModal();
+    showPhoto(0);
+  });
+
+  previous?.addEventListener('click', () => showPhoto(currentIndex - 1));
+  next?.addEventListener('click', () => showPhoto(currentIndex + 1));
+
+  dialog?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      showPhoto(currentIndex - 1);
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      showPhoto(currentIndex + 1);
+    }
+  });
+
+  dialog?.addEventListener('close', () => {
+    ++requestId;
+    image?.classList.remove('is-changing');
+  });
+</script>
+
+
+<style is:global>
+  #gallery {
+    padding: clamp(5rem, 9vw, 9rem) 0;
+    background: #edf3ee;
+  }
+
+  #gallery .gallery-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  #gallery h2 {
+    margin: 1rem 0 0;
+    color: #183e3b;
+    font-size: clamp(2.7rem, 5vw, 5rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+  }
+
+  #gallery .gallery-heading > p {
+    max-width: 19rem;
+    margin: 0 0 0.35rem;
+    color: #536763;
+    line-height: 1.7;
+  }
+
+  #gallery .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  #gallery .gallery-photo {
+    overflow: hidden;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    background: #d9e4db;
+  }
+
+  #gallery .gallery-photo:nth-child(-n + 2) {
+    grid-column: span 2;
+    aspect-ratio: 3 / 2;
+  }
+
+  #gallery .gallery-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #gallery .empty {
+    color: #536763;
+  }
+
+  #gallery .gallery-actions {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+
+  #gallery .view-all {
+    min-height: 3.25rem;
+    padding: 0.8rem 1.6rem;
+    border: 1px solid #245f58;
+    border-radius: 999px;
+    background: transparent;
+    color: #245f58;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #gallery .view-all:hover {
+    background: #245f58;
+    color: white;
+  }
+
+  #gallery .view-all:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #gallery .view-all span {
+    margin-left: 0.35rem;
+  }
+
+  #gallery .photo-dialog {
+    width: min(1020px, calc(100% - 1.5rem));
+    max-width: 1020px;
+    max-height: 92vh;
+    max-height: 92dvh;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 1.25rem;
+    background: #fffdf8;
+    color: #183e3b;
+    box-shadow: 0 25px 80px rgb(0 0 0 / 25%);
+  }
+
+  #gallery .photo-dialog::backdrop {
+    background: rgb(12 32 29 / 85%);
+  }
+
+  #gallery .lightbox-header,
+  #gallery .viewer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  #gallery .lightbox-header h3 {
+    margin: 0.3rem 0 0;
+    font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+    font-weight: 500;
+  }
+
+  #gallery .close-button,
+  #gallery .viewer-controls button {
+    padding: 0.65rem 1rem;
+    border: 1px solid #b8cbc0;
+    border-radius: 999px;
+    background: white;
+    color: #183e3b;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #gallery .close-button:hover,
+  #gallery .viewer-controls button:hover {
+    background: #e9f1eb;
+  }
+
+  #gallery .close-button span {
+    margin-left: 0.3rem;
+    font-size: 1.2rem;
+  }
+
+  #gallery .viewer-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: min(67vh, 680px);
+    height: min(67dvh, 680px);
+    overflow: hidden;
+    background: #dfe9e2;
+  }
+
+  #gallery .viewer-stage[data-ready='false']::before {
+    content: 'Loading photo…';
+    color: #536763;
+  }
+
+  #gallery .viewer-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 1;
+    transition: opacity 180ms ease;
+  }
+
+  #gallery .viewer-image.is-changing {
+    opacity: 0;
+  }
+
+  #gallery .viewer-controls {
+    min-height: 4.75rem;
+  }
+
+  #gallery .photo-count {
+    color: #536763;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    #gallery .gallery-heading {
+      display: block;
+    }
+
+    #gallery .gallery-heading > p {
+      margin-top: 1.25rem;
+    }
+
+    #gallery .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    #gallery .gallery-photo:nth-child(-n + 2) {
+      aspect-ratio: 4 / 3;
+    }
+
+    #gallery .lightbox-header,
+    #gallery .viewer-controls {
+      padding: 0.8rem;
+    }
+
+    #gallery .viewer-stage {
+      height: 63vh;
+      height: 63dvh;
+    }
+
+    #gallery .viewer-controls button {
+      padding: 0.6rem;
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #gallery .viewer-image {
+      transition: none;
+    }
+  }
+</style>

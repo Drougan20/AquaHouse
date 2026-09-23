@@ -1,0 +1,91 @@
+---
+import { site } from '../config/site';
+---
+
+<section id="house" class="house" aria-labelledby="house-title">
+  <div class="container house-grid">
+    <div class="heading">
+      <p class="eyebrow">The house</p>
+      <h2 id="house-title">
+        Your own space,<br />
+        <em>your own pace.</em>
+      </h2>
+    </div>
+
+    <div class="details">
+      <p class="booking-note">The entire house is yours for your stay.</p>
+      <p class="description">{site.about}</p>
+      <a href="#contact">Ask about your stay <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .house {
+    padding: clamp(5rem, 9vw, 9rem) 0;
+    background: #fffdf8;
+  }
+
+  .house-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: clamp(3rem, 8vw, 9rem);
+    align-items: start;
+  }
+
+  h2 {
+    margin: 1.25rem 0 0;
+    color: #183e3b;
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+  }
+
+  h2 em {
+    color: #668e7b;
+    font-family: Georgia, serif;
+    font-weight: 400;
+  }
+
+  .details {
+    padding-top: 2.5rem;
+  }
+
+  .booking-note {
+    margin: 0 0 1.5rem;
+    color: #245f58;
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .description {
+    margin: 0;
+    color: #536763;
+    font-size: 1.05rem;
+    line-height: 1.85;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 2rem;
+    color: #245f58;
+    font-weight: 600;
+    text-underline-offset: 0.35em;
+  }
+
+  a span {
+    margin-left: 0.3rem;
+  }
+
+  @media (max-width: 760px) {
+    .house-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .details {
+      padding-top: 0;
+    }
+  }
+</style>

@@ -1,0 +1,127 @@
+---
+import { site } from '../config/site';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#top" aria-label={`${site.name} home`}>
+      {site.name}
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a class="nav-link" href="#house">The house</a>
+      <a class="nav-link" href="#gallery">Gallery</a>
+      <a class="nav-book-now" href="/#availability">Book now</a>
+      <a class="nav-link" href="#contact">Contact</a>
+    </nav>
+
+    <a class="enquire-link" href="#contact">
+      Enquire about dates
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .header-inner {
+    display: flex;
+    min-height: 76px;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .brand {
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: -0.04em;
+  }
+
+  nav {
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+  }
+
+  .nav-link {
+    font-size: 14px;
+  }
+
+  .nav-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+
+  .enquire-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 16px;
+    border: 1px solid var(--color-sea);
+    color: var(--color-sea);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .enquire-link:hover {
+    background: var(--color-sage);
+  }
+
+  @media (max-width: 760px) {
+    .header-inner {
+      min-height: 66px;
+    }
+
+    nav {
+      gap: 16px;
+    }
+
+    .enquire-link {
+      display: none;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .brand {
+      font-size: 19px;
+    }
+
+    .nav-link:not(:last-child) {
+      display: none;
+    }
+  }
+
+  .nav-book-now {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  background: #20564d;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav-book-now:hover {
+  background: #17443c;
+}
+
+.nav-book-now:focus-visible {
+  outline: 3px solid #a7cdb5;
+  outline-offset: 3px;
+}
+
+:global(#availability) {
+  scroll-margin-top: 5rem;
+}
+</style>
