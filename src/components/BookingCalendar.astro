@@ -1,3 +1,6 @@
+---
+const airbnbUrl = 'https://www.airbnb.co.za/rooms/1758038818357992538?guests=1&adults=1&s=67&unique_share_id=0596a1c7-c6de-4a90-8421-23219224314f&source_impression_id=p3_1790601392_P3EZNgWFgvnWtyx4';
+---
 <section id="availability" class="booking" aria-labelledby="booking-title">
   <div class="booking-layout">
     <div class="booking-intro">
@@ -116,6 +119,21 @@
           </div>
         </div>
       </div>
+
+            {airbnbUrl ? (
+        <a
+          class="airbnb-link"
+          href={airbnbUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Book now on Airbnb <span aria-hidden="true">↗</span>
+        </a>
+      ) : (
+        <p class="airbnb-link airbnb-link-placeholder">
+          Book now on Airbnb — link coming soon
+        </p>
+      )}
 
       <p id="booking-status" class="booking-status" role="status">
         Loading availability…
@@ -342,6 +360,25 @@
 
   .view-calendar:hover {
     background: #eef6f0;
+  }
+
+    .airbnb-link {
+    display: inline-block;
+    margin-top: 0.9rem;
+    color: #20564d;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .airbnb-link:hover {
+    color: #368c71;
+  }
+
+  .airbnb-link-placeholder {
+    color: #637e73;
+    text-decoration: none;
   }
 
   .booking-status {
