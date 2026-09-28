@@ -1,0 +1,9 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Aqua House</title>
+  <rect width="64" height="64" rx="13" fill="#19423d"/>
+  <path d="M9 29 32 14l23 15" fill="none" stroke="#f7f6ef" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="43" cy="27" r="2.6" fill="#c8dfd0"/>
+  <path d="m15 41 9-9 4 2 3-4h9l4 7 5 4H15Z" fill="#a9cabb"/>
+  <path d="M12 47c8 4 14-4 21-4s12 8 19 3" fill="none" stroke="#69aea2" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M17 53c7 2 12-3 17-3s9 4 14 2" fill="none" stroke="#a9cabb" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

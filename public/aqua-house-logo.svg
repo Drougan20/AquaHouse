@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 315" role="img" aria-labelledby="logo-title">
+  <title id="logo-title">Aqua House</title>
+  <path d="M195 118 360 25 525 118" fill="none" stroke="#19423d" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M204 118 360 35 516 118" fill="none" stroke="#19423d" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M456 82V61h19v32" fill="#19423d"/>
+  <circle cx="430" cy="117" r="8" fill="#b9d1c0"/>
+  <path d="M226 164c19-6 31-19 45-34l9 4 9-12 7 5 9-10h93l10 20 14 8 10-8 13 13 26 12 18 9H226Z" fill="#a9cabb"/>
+  <path d="M197 178c48 12 88-24 144-24 62 0 86 32 182 18-58 31-111 10-165-1-59-12-99 27-161 7Z" fill="#276b68"/>
+  <path d="M257 187c53-11 84-13 127 0 46 14 67 14 111 1-47 23-76 19-119 7-45-13-79-11-119-8Z" fill="#19423d"/>
+  <text x="360" y="267" text-anchor="middle" textLength="650" lengthAdjust="spacingAndGlyphs" font-family="Georgia, 'Times New Roman', serif" font-size="83" fill="#19423d">Aqua House</text>
+  <path d="M192 282c26 21 56 20 89 6" fill="none" stroke="#19423d" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

@@ -9,7 +9,12 @@ import { site } from '../config/site';
       href="/#top"
       aria-label={`${site.name} home`}
     >
-      {site.name}
+      <img
+        src="/aqua-house-logo.svg"
+        alt=""
+        width="720"
+        height="315"
+      />
     </a>
 
     <nav aria-label="Main navigation">
@@ -39,7 +44,7 @@ import { site } from '../config/site';
   }
 
   .header-inner {
-    min-height: 76px;
+    min-height: 96px;
     display: flex;
     align-items: center;
     gap: 32px;
@@ -47,11 +52,20 @@ import { site } from '../config/site';
 
   .brand {
     flex-shrink: 0;
-    color: var(--color-ink);
-    font-family: var(--font-display);
-    font-size: 24px;
-    letter-spacing: -0.04em;
-    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .brand img {
+    display: block;
+    width: 182px;
+    height: auto;
+  }
+
+  .brand:focus-visible {
+    outline: 3px solid var(--color-sea);
+    outline-offset: 4px;
   }
 
   nav {
@@ -115,9 +129,21 @@ import { site } from '../config/site';
     transform: translateY(-1px);
   }
 
+  :global(#availability),
+  :global(#house),
+  :global(#gallery),
+  :global(#contact) {
+    scroll-margin-top: 106px;
+  }
+
   @media (max-width: 900px) {
     .header-inner {
+      min-height: 90px;
       gap: 22px;
+    }
+
+    .brand img {
+      width: 170px;
     }
 
     nav {
@@ -131,17 +157,28 @@ import { site } from '../config/site';
 
   @media (max-width: 760px) {
     .header-inner {
-      min-height: 68px;
+      min-height: 76px;
+    }
+
+    .brand img {
+      width: 150px;
     }
 
     .nav-link {
       display: none;
     }
+
+    :global(#availability),
+    :global(#house),
+    :global(#gallery),
+    :global(#contact) {
+      scroll-margin-top: 86px;
+    }
   }
 
   @media (max-width: 600px) {
-    .brand {
-      font-size: 21px;
+    .brand img {
+      width: 140px;
     }
 
     .nav-book-now {

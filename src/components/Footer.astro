@@ -7,8 +7,18 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container footer-main">
     <div class="footer-brand">
-      <a href="/#top" aria-label={`${site.name} home`}>
-        {site.name}
+      <a
+        class="footer-logo"
+        href="/#top"
+        aria-label={`${site.name} home`}
+      >
+        <img
+          src="/aqua-house-logo.svg"
+          alt=""
+          width="720"
+          height="315"
+          loading="lazy"
+        />
       </a>
 
       <p>
@@ -47,15 +57,25 @@ const year = new Date().getFullYear();
     padding-bottom: clamp(3rem, 5vw, 4.5rem);
   }
 
-  .footer-brand > a {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    letter-spacing: -0.04em;
+  .footer-logo {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .footer-logo img {
+    display: block;
+    width: 220px;
+    height: auto;
+  }
+
+  .footer-logo:focus-visible {
+    outline: 3px solid var(--color-sea);
+    outline-offset: 4px;
   }
 
   .footer-brand p {
     max-width: 24rem;
-    margin: 1rem 0 0;
+    margin: 0.75rem 0 0;
     color: var(--color-muted);
     line-height: 1.7;
   }
@@ -98,6 +118,10 @@ const year = new Date().getFullYear();
     .footer-main {
       grid-template-columns: 1fr;
       gap: 2rem;
+    }
+
+    .footer-logo img {
+      width: 190px;
     }
 
     nav {
